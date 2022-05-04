@@ -1,12 +1,12 @@
 from typing import Any, AsyncGenerator, Dict, List, Optional
 
-from beanie import init_beanie
-from pydantic import Field
-import pytest
 import pymongo.errors
+import pytest
+from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+from pydantic import Field
 
-from fastapi_users_db_beanie import BaseOAuthAccount, BeanieUserDatabase, BeanieBaseUser
+from fastapi_users_db_beanie import BaseOAuthAccount, BeanieBaseUser, BeanieUserDatabase
 
 
 class User(BeanieBaseUser):
@@ -63,7 +63,9 @@ async def beanie_user_db_oauth(
 
 
 @pytest.mark.asyncio
-async def test_queries(beanie_user_db: BeanieUserDatabase[User], oauth_account1: Dict[str, Any]):
+async def test_queries(
+    beanie_user_db: BeanieUserDatabase[User], oauth_account1: Dict[str, Any]
+):
     user_create = {
         "email": "lancelot@camelot.bt",
         "hashed_password": "guinevere",

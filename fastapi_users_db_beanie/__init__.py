@@ -7,7 +7,6 @@ from pydantic import BaseModel
 from pymongo import IndexModel
 from pymongo.collation import Collation
 
-
 __version__ = "0.0.0"
 
 
