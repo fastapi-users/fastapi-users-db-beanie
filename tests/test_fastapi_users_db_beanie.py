@@ -9,7 +9,7 @@ from pydantic import Field
 from fastapi_users_db_beanie import BaseOAuthAccount, BeanieBaseUser, BeanieUserDatabase
 
 
-class User(BeanieBaseUser):
+class User(BeanieBaseUser[PydanticObjectId]):
     first_name: Optional[str] = None
 
 
