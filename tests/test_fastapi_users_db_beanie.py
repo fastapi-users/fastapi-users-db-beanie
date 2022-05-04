@@ -2,7 +2,7 @@ from typing import Any, AsyncGenerator, Dict, List, Optional
 
 import pymongo.errors
 import pytest
-from beanie import init_beanie
+from beanie import PydanticObjectId, init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from pydantic import Field
 
@@ -64,7 +64,8 @@ async def beanie_user_db_oauth(
 
 @pytest.mark.asyncio
 async def test_queries(
-    beanie_user_db: BeanieUserDatabase[User], oauth_account1: Dict[str, Any]
+    beanie_user_db: BeanieUserDatabase[User, PydanticObjectId],
+    oauth_account1: Dict[str, Any],
 ):
     user_create = {
         "email": "lancelot@camelot.bt",
@@ -133,7 +134,10 @@ async def test_queries(
     ],
 )
 async def test_email_query(
-    beanie_user_db: BeanieUserDatabase[User], email: str, query: str, found: bool
+    beanie_user_db: BeanieUserDatabase[User, PydanticObjectId],
+    email: str,
+    query: str,
+    found: bool,
 ):
     user_create = {
         "email": email,
@@ -151,7 +155,9 @@ async def test_email_query(
 
 
 @pytest.mark.asyncio
-async def test_insert_existing_email(beanie_user_db: BeanieUserDatabase[User]):
+async def test_insert_existing_email(
+    beanie_user_db: BeanieUserDatabase[User, PydanticObjectId]
+):
     user_create = {
         "email": "lancelot@camelot.bt",
         "hashed_password": "guinevere",
@@ -164,7 +170,7 @@ async def test_insert_existing_email(beanie_user_db: BeanieUserDatabase[User]):
 
 @pytest.mark.asyncio
 async def test_queries_custom_fields(
-    beanie_user_db: BeanieUserDatabase[User],
+    beanie_user_db: BeanieUserDatabase[User, PydanticObjectId],
 ):
     """It should output custom fields in query result."""
     user_create = {
@@ -183,7 +189,7 @@ async def test_queries_custom_fields(
 
 @pytest.mark.asyncio
 async def test_queries_oauth(
-    beanie_user_db_oauth: BeanieUserDatabase[UserOAuth],
+    beanie_user_db_oauth: BeanieUserDatabase[UserOAuth, PydanticObjectId],
     oauth_account1: Dict[str, Any],
     oauth_account2: Dict[str, Any],
 ):

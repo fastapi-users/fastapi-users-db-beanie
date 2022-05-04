@@ -3,7 +3,7 @@ from typing import Any, Dict, Generic, Optional, Type, TypeVar
 
 from beanie import Document, PydanticObjectId
 from fastapi_users.db.base import BaseUserDatabase
-from fastapi_users.models import OAP
+from fastapi_users.models import ID, OAP
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
 from pymongo.collation import Collation
@@ -41,9 +41,7 @@ class BaseOAuthAccount(BaseModel):
     refresh_token: Optional[str] = None
 
 
-class BeanieUserDatabase(
-    Generic[UP_BEANIE], BaseUserDatabase[UP_BEANIE, PydanticObjectId]
-):
+class BeanieUserDatabase(Generic[UP_BEANIE, ID], BaseUserDatabase[UP_BEANIE, ID]):
     """
     Database adapter for Beanie.
 
@@ -59,9 +57,9 @@ class BeanieUserDatabase(
         self.user_model = user_model
         self.oauth_account_model = oauth_account_model
 
-    async def get(self, id: PydanticObjectId) -> Optional[UP_BEANIE]:
+    async def get(self, id: ID) -> Optional[UP_BEANIE]:
         """Get a single user by id."""
-        return await self.user_model.get(id)
+        return await self.user_model.get(id)  # type: ignore
 
     async def get_by_email(self, email: str) -> Optional[UP_BEANIE]:
         """Get a single user by email."""

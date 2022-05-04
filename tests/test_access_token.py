@@ -12,7 +12,7 @@ from fastapi_users_db_beanie.access_token import (
 )
 
 
-class AccessToken(BeanieBaseAccessToken):
+class AccessToken(BeanieBaseAccessToken[PydanticObjectId]):
     pass
 
 

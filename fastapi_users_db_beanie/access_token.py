@@ -1,15 +1,16 @@
 from datetime import datetime, timezone
 from typing import Any, Dict, Generic, Optional, Type, TypeVar
 
-from beanie import Document, PydanticObjectId
+from beanie import Document
 from fastapi_users.authentication.strategy.db import AccessTokenDatabase
+from fastapi_users.models import ID
 from pydantic import Field
 from pymongo import IndexModel
 
 
-class BeanieBaseAccessToken(Document):
+class BeanieBaseAccessToken(Generic[ID], Document):
     token: str
-    user_id: PydanticObjectId
+    user_id: ID
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     class Collection:
