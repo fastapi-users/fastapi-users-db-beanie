@@ -3,7 +3,8 @@ from typing import Any, Dict, Generic, Optional, Type, TypeVar
 
 from beanie import Document, PydanticObjectId
 from fastapi_users.db.base import BaseUserDatabase
-from pydantic import BaseModel
+from fastapi_users.models import OAP
+from pydantic import BaseModel, Field
 from pymongo import IndexModel
 from pymongo.collation import Collation
 
@@ -31,6 +32,7 @@ UP_BEANIE = TypeVar("UP_BEANIE", bound=BeanieBaseUser)
 
 
 class BaseOAuthAccount(BaseModel):
+    id: PydanticObjectId = Field(default_factory=PydanticObjectId)
     oauth_name: str
     access_token: str
     account_id: str
@@ -110,10 +112,7 @@ class BeanieUserDatabase(
         return await user.save()
 
     async def update_oauth_account(
-        self,
-        user: UP_BEANIE,
-        oauth_account: BaseOAuthAccount,
-        update_dict: Dict[str, Any],
+        self, user: UP_BEANIE, oauth_account: OAP, update_dict: Dict[str, Any]
     ) -> UP_BEANIE:
         """Update an OAuth account on a user."""
         if self.oauth_account_model is None:
