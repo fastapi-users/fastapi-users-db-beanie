@@ -3,10 +3,16 @@ from typing import Any, AsyncGenerator, Dict, List, Optional
 import pymongo.errors
 import pytest
 from beanie import PydanticObjectId, init_beanie
+from fastapi_users import InvalidID
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from pydantic import Field
 
-from fastapi_users_db_beanie import BaseOAuthAccount, BeanieBaseUser, BeanieUserDatabase
+from fastapi_users_db_beanie import (
+    BaseOAuthAccount,
+    BeanieBaseUser,
+    BeanieUserDatabase,
+    ObjectIDIDMixin,
+)
 
 
 class User(BeanieBaseUser[PydanticObjectId]):
@@ -238,3 +244,17 @@ async def test_queries_oauth(
     # Unknown OAuth account
     unknown_oauth_user = await beanie_user_db_oauth.get_by_oauth_account("foo", "bar")
     assert unknown_oauth_user is None
+
+
+def test_objectid_id_mixin():
+    object_id_mixin = ObjectIDIDMixin()
+    object_id = PydanticObjectId("62736e11bae73a7a990f7df1")
+
+    assert object_id_mixin.parse_id("62736e11bae73a7a990f7df1") == object_id
+    assert object_id_mixin.parse_id(object_id) == object_id
+
+    with pytest.raises(InvalidID):
+        object_id_mixin.parse_id("abc")
+
+    with pytest.raises(InvalidID):
+        object_id_mixin.parse_id(12346)

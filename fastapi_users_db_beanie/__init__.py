@@ -1,7 +1,9 @@
 """FastAPI Users database adapter for Beanie."""
 from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, Type, TypeVar
 
+import bson.errors
 from beanie import Document, PydanticObjectId
+from fastapi_users import InvalidID
 from fastapi_users.db.base import BaseUserDatabase
 from fastapi_users.models import ID, OAP
 from pydantic import BaseModel, Field
@@ -127,3 +129,11 @@ class BeanieUserDatabase(Generic[UP_BEANIE, ID], BaseUserDatabase[UP_BEANIE, ID]
                     setattr(user.oauth_accounts[i], key, value)  # type: ignore
 
         return await user.save()
+
+
+class ObjectIDIDMixin:
+    def parse_id(self, value: Any) -> PydanticObjectId:
+        try:
+            return PydanticObjectId(value)
+        except (bson.errors.InvalidId, TypeError) as e:
+            raise InvalidID() from e
