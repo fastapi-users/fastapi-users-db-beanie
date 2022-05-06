@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, Type, TypeVar
 
 import bson.errors
 from beanie import Document, PydanticObjectId
-from fastapi_users import InvalidID
 from fastapi_users.db.base import BaseUserDatabase
+from fastapi_users.exceptions import InvalidID
 from fastapi_users.models import ID, OAP
 from pydantic import BaseModel, Field
 from pymongo import IndexModel
