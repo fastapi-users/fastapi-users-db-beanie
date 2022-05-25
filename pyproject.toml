@@ -15,7 +15,8 @@ name = "fastapi_users_db_beanie"
 [project]
 name = "fastapi-users-db-beanie"
 authors = [
-    { name = "François Voron", email = "fvoron@gmail.com" }
+    { name = "François Voron", email = "fvoron@gmail.com" },
+    { name = "Schwannden Kuo", email = "schwannden@gmail.com" }
 ]
 description = "FastAPI Users database adapter for Beanie"
 readme = "README.md"
@@ -36,7 +37,7 @@ classifiers = [
 requires-python = ">=3.7"
 dependencies = [
     "fastapi-users >= 10.0.1",
-    "beanie >=1.10.8,<1.11",
+    "beanie >=1.11.0,<1.12",
 ]
 
 [project.optional-dependencies]
