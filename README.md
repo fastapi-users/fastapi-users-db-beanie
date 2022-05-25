@@ -45,8 +45,7 @@ source venv/bin/activate
 And then install the development dependencies:
 
 ```bash
-pip install flit
-pip flit install --deps develop
+make install
 ```
 
 ### Run unit tests
