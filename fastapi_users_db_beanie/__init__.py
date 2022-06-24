@@ -22,7 +22,7 @@ class BeanieBaseUser(Generic[ID], Document):
     is_superuser: bool = False
     is_verified: bool = False
 
-    class Collection:
+    class Settings:
         email_collation = Collation("en", strength=2)
         indexes = [
             IndexModel("email", unique=True),
@@ -69,7 +69,7 @@ class BeanieUserDatabase(Generic[UP_BEANIE, ID], BaseUserDatabase[UP_BEANIE, ID]
         """Get a single user by email."""
         return await self.user_model.find_one(
             self.user_model.email == email,
-            collation=self.user_model.Collection.email_collation,
+            collation=self.user_model.Settings.email_collation,
         )
 
     async def get_by_oauth_account(
