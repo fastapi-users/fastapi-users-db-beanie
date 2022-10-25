@@ -5,12 +5,61 @@ profile = "black"
 asyncio_mode = "auto"
 addopts = "--ignore=test_build.py"
 
-[build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+[tool.hatch]
 
-[tool.flit.module]
-name = "fastapi_users_db_beanie"
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.version]
+source = "regex_commit"
+commit_extra_args = ["-e"]
+path = "fastapi_users_db_beanie/__init__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+    "flake8",
+    "pytest",
+    "requests",
+    "isort",
+    "pytest-asyncio",
+    "flake8-docstrings",
+    "black",
+    "mypy",
+    "codecov",
+    "pytest-cov",
+    "pytest-mock",
+    "asynctest",
+    "flit",
+    "bumpversion",
+    "httpx",
+    "asgi_lifespan",
+]
+
+[tool.hatch.envs.default.scripts]
+test = [
+    "docker stop fastapi-users-db-beanie-test-mongo || true",
+    "docker run -d --rm --name fastapi-users-db-beanie-test-mongo -p 27017:27017 mongo:4.4",
+    "pytest --cov=fastapi_users_db_beanie/ --cov-report=term-missing --cov-fail-under=100",
+    "docker stop fastapi-users-db-beanie-test-mongo",
+]
+test-cov-xml = "pytest --cov=fastapi_users_db_beanie/ --cov-report=xml --cov-fail-under=100"
+lint = [
+  "isort ./fastapi_users_db_beanie ./tests",
+  "black . ",
+  "mypy fastapi_users_db_beanie/",
+]
+lint-check = [
+  "isort --check-only ./fastapi_users_db_beanie ./tests",
+  "black --check .",
+  "mypy fastapi_users_db_beanie/",
+]
+
+[tool.hatch.build.targets.sdist]
+support-legacy = true  # Create setup.py
+
+[build-system]
+requires = ["hatchling", "hatch-regex-commit"]
+build-backend = "hatchling.build"
 
 [project]
 name = "fastapi-users-db-beanie"
@@ -40,25 +89,6 @@ dependencies = [
     "beanie >=1.11.0,<1.14",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "flake8",
-    "pytest",
-    "requests",
-    "isort",
-    "pytest-asyncio",
-    "flake8-docstrings",
-    "black",
-    "mypy",
-    "codecov",
-    "pytest-cov",
-    "pytest-mock",
-    "asynctest",
-    "flit",
-    "bumpversion",
-    "httpx",
-    "asgi_lifespan",
-]
-
 [project.urls]
 Documentation = "https://fastapi-users.github.io/fastapi-users"
+Source = "https://github.com/fastapi-users/fastapi-users-db-beanie"
