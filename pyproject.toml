@@ -29,8 +29,6 @@ dependencies = [
     "pytest-cov",
     "pytest-mock",
     "asynctest",
-    "flit",
-    "bumpversion",
     "httpx",
     "asgi_lifespan",
 ]
