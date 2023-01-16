@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 from pymongo import IndexModel
 from pymongo.collation import Collation
 
-__version__ = "1.1.2"
+__version__ = "1.1.3"
 
 
 class BeanieBaseUser(Generic[ID], Document):
