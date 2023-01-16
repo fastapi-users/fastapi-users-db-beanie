@@ -5,6 +5,9 @@ profile = "black"
 asyncio_mode = "auto"
 addopts = "--ignore=test_build.py"
 
+[tool.ruff]
+extend-select = ["I"]
+
 [tool.hatch]
 
 [tool.hatch.metadata]
@@ -17,12 +20,8 @@ path = "fastapi_users_db_beanie/__init__.py"
 
 [tool.hatch.envs.default]
 dependencies = [
-    "flake8",
     "pytest",
-    "requests",
-    "isort",
     "pytest-asyncio",
-    "flake8-docstrings",
     "black",
     "mypy",
     "codecov",
@@ -31,6 +30,7 @@ dependencies = [
     "asynctest",
     "httpx",
     "asgi_lifespan",
+    "ruff",
 ]
 
 [tool.hatch.envs.default.scripts]
@@ -42,13 +42,13 @@ test = [
 ]
 test-cov-xml = "pytest --cov=fastapi_users_db_beanie/ --cov-report=xml --cov-fail-under=100"
 lint = [
-  "isort ./fastapi_users_db_beanie ./tests",
   "black . ",
+  "ruff --fix .",
   "mypy fastapi_users_db_beanie/",
 ]
 lint-check = [
-  "isort --check-only ./fastapi_users_db_beanie ./tests",
   "black --check .",
+  "ruff .",
   "mypy fastapi_users_db_beanie/",
 ]
 
