@@ -40,14 +40,16 @@ class BeanieAccessTokenDatabase(Generic[AP_BEANIE], AccessTokenDatabase[AP_BEANI
 
     async def create(self, create_dict: Dict[str, Any]) -> AP_BEANIE:
         access_token = self.access_token_model(**create_dict)
-        return await access_token.save()
+        await access_token.create()
+        return access_token
 
     async def update(
         self, access_token: AP_BEANIE, update_dict: Dict[str, Any]
     ) -> AP_BEANIE:
         for key, value in update_dict.items():
             setattr(access_token, key, value)
-        return await access_token.save()
+        await access_token.save()
+        return access_token
 
     async def delete(self, access_token: AP_BEANIE) -> None:
         await access_token.delete()

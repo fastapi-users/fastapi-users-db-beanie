@@ -89,13 +89,15 @@ class BeanieUserDatabase(Generic[UP_BEANIE, ID], BaseUserDatabase[UP_BEANIE, ID]
     async def create(self, create_dict: Dict[str, Any]) -> UP_BEANIE:
         """Create a user."""
         user = self.user_model(**create_dict)
-        return await user.insert()
+        await user.create()
+        return user
 
     async def update(self, user: UP_BEANIE, update_dict: Dict[str, Any]) -> UP_BEANIE:
         """Update a user."""
         for key, value in update_dict.items():
             setattr(user, key, value)
-        return await user.save()
+        await user.save()
+        return user
 
     async def delete(self, user: UP_BEANIE) -> None:
         """Delete a user."""
@@ -111,7 +113,8 @@ class BeanieUserDatabase(Generic[UP_BEANIE, ID], BaseUserDatabase[UP_BEANIE, ID]
         oauth_account = self.oauth_account_model(**create_dict)
         user.oauth_accounts.append(oauth_account)  # type: ignore
 
-        return await user.save()
+        await user.save()
+        return user
 
     async def update_oauth_account(
         self, user: UP_BEANIE, oauth_account: OAP, update_dict: Dict[str, Any]
@@ -128,7 +131,8 @@ class BeanieUserDatabase(Generic[UP_BEANIE, ID], BaseUserDatabase[UP_BEANIE, ID]
                 for key, value in update_dict.items():
                     setattr(user.oauth_accounts[i], key, value)  # type: ignore
 
-        return await user.save()
+        await user.save()
+        return user
 
 
 class ObjectIDIDMixin:

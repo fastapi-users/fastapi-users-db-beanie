@@ -63,11 +63,14 @@ async def test_queries(
     assert access_token.user_id == user_id
 
     # Update
-    update_dict = {"created_at": datetime.now(timezone.utc)}
+    updated_created_at = datetime.now(timezone.utc)
+    update_dict = {"created_at": updated_created_at}
     updated_access_token = await beanie_access_token_db.update(
         access_token, update_dict
     )
-    assert updated_access_token.created_at == update_dict["created_at"]
+    assert updated_access_token.created_at == update_dict["created_at"].replace(
+        microsecond=int(updated_created_at.microsecond / 1000) * 1000, tzinfo=None
+    )
 
     # Get by token
     access_token_by_token = await beanie_access_token_db.get_by_token(
