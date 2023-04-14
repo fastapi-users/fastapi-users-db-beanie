@@ -21,7 +21,6 @@ dependencies = [
     "pytest-asyncio",
     "black",
     "mypy",
-    "codecov",
     "pytest-cov",
     "pytest-mock",
     "asynctest",
