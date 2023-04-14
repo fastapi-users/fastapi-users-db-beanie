@@ -3,7 +3,7 @@ from typing import AsyncGenerator
 
 import pymongo.errors
 import pytest
-from beanie import PydanticObjectId, init_beanie
+from beanie import Document, PydanticObjectId, init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 from fastapi_users_db_beanie.access_token import (
@@ -12,7 +12,7 @@ from fastapi_users_db_beanie.access_token import (
 )
 
 
-class AccessToken(BeanieBaseAccessToken[PydanticObjectId]):
+class AccessToken(BeanieBaseAccessToken, Document):
     pass
 
 

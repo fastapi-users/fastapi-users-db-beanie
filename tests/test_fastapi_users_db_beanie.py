@@ -2,7 +2,7 @@ from typing import Any, AsyncGenerator, Dict, List, Optional
 
 import pymongo.errors
 import pytest
-from beanie import PydanticObjectId, init_beanie
+from beanie import Document, PydanticObjectId, init_beanie
 from fastapi_users import InvalidID
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from pydantic import Field
@@ -15,7 +15,7 @@ from fastapi_users_db_beanie import (
 )
 
 
-class User(BeanieBaseUser[PydanticObjectId]):
+class User(Document, BeanieBaseUser):
     first_name: Optional[str] = None
 
 
@@ -70,7 +70,7 @@ async def beanie_user_db_oauth(
 
 @pytest.mark.asyncio
 async def test_queries(
-    beanie_user_db: BeanieUserDatabase[User, PydanticObjectId],
+    beanie_user_db: BeanieUserDatabase[User],
     oauth_account1: Dict[str, Any],
 ):
     user_create = {
@@ -140,7 +140,7 @@ async def test_queries(
     ],
 )
 async def test_email_query(
-    beanie_user_db: BeanieUserDatabase[User, PydanticObjectId],
+    beanie_user_db: BeanieUserDatabase[User],
     email: str,
     query: str,
     found: bool,
@@ -161,9 +161,7 @@ async def test_email_query(
 
 
 @pytest.mark.asyncio
-async def test_insert_existing_email(
-    beanie_user_db: BeanieUserDatabase[User, PydanticObjectId]
-):
+async def test_insert_existing_email(beanie_user_db: BeanieUserDatabase[User]):
     user_create = {
         "email": "lancelot@camelot.bt",
         "hashed_password": "guinevere",
@@ -176,7 +174,7 @@ async def test_insert_existing_email(
 
 @pytest.mark.asyncio
 async def test_queries_custom_fields(
-    beanie_user_db: BeanieUserDatabase[User, PydanticObjectId],
+    beanie_user_db: BeanieUserDatabase[User],
 ):
     """It should output custom fields in query result."""
     user_create = {
@@ -195,7 +193,7 @@ async def test_queries_custom_fields(
 
 @pytest.mark.asyncio
 async def test_queries_oauth(
-    beanie_user_db_oauth: BeanieUserDatabase[UserOAuth, PydanticObjectId],
+    beanie_user_db_oauth: BeanieUserDatabase[UserOAuth],
     oauth_account1: Dict[str, Any],
     oauth_account2: Dict[str, Any],
 ):

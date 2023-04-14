@@ -1,23 +1,33 @@
 from datetime import datetime, timezone
-from typing import Any, Dict, Generic, Optional, Type, TypeVar
+from typing import (
+    Any,
+    Dict,
+    Generic,
+    Optional,
+    Type,
+    TypeVar,
+)
 
-from beanie import Document
+from beanie import Document, PydanticObjectId
 from fastapi_users.authentication.strategy.db import AccessTokenDatabase
-from fastapi_users.models import ID
-from pydantic import Field
+from pydantic import BaseModel, Field
 from pymongo import IndexModel
 
 
-class BeanieBaseAccessToken(Generic[ID], Document):
+class BeanieBaseAccessToken(BaseModel):
     token: str
-    user_id: ID
+    user_id: PydanticObjectId
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     class Settings:
         indexes = [IndexModel("token", unique=True)]
 
 
-AP_BEANIE = TypeVar("AP_BEANIE", bound=BeanieBaseAccessToken)
+class BeanieBaseAccessTokenDocument(BeanieBaseAccessToken, Document):  # type: ignore
+    pass
+
+
+AP_BEANIE = TypeVar("AP_BEANIE", bound=BeanieBaseAccessTokenDocument)
 
 
 class BeanieAccessTokenDatabase(Generic[AP_BEANIE], AccessTokenDatabase[AP_BEANIE]):

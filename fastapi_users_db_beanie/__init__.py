@@ -1,5 +1,5 @@
 """FastAPI Users database adapter for Beanie."""
-from typing import TYPE_CHECKING, Any, Dict, Generic, Optional, Type, TypeVar
+from typing import Any, Dict, Generic, Optional, Type, TypeVar
 
 import bson.errors
 from beanie import Document, PydanticObjectId
@@ -13,9 +13,7 @@ from pymongo.collation import Collation
 __version__ = "1.1.4"
 
 
-class BeanieBaseUser(Generic[ID], Document):
-    if TYPE_CHECKING:
-        id: ID  # type: ignore # pragma: no cover
+class BeanieBaseUser(BaseModel):
     email: str
     hashed_password: str
     is_active: bool = True
@@ -32,7 +30,11 @@ class BeanieBaseUser(Generic[ID], Document):
         ]
 
 
-UP_BEANIE = TypeVar("UP_BEANIE", bound=BeanieBaseUser)
+class BeanieBaseUserDocument(BeanieBaseUser, Document):  # type: ignore
+    pass
+
+
+UP_BEANIE = TypeVar("UP_BEANIE", bound=BeanieBaseUserDocument)
 
 
 class BaseOAuthAccount(BaseModel):
@@ -45,7 +47,9 @@ class BaseOAuthAccount(BaseModel):
     refresh_token: Optional[str] = None
 
 
-class BeanieUserDatabase(Generic[UP_BEANIE, ID], BaseUserDatabase[UP_BEANIE, ID]):
+class BeanieUserDatabase(
+    Generic[UP_BEANIE], BaseUserDatabase[UP_BEANIE, PydanticObjectId]
+):
     """
     Database adapter for Beanie.
 
