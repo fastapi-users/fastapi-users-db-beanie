@@ -70,7 +70,6 @@ classifiers = [
     "Framework :: FastAPI",
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -78,7 +77,7 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Internet :: WWW/HTTP :: Session",
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 dependencies = [
     "fastapi-users >= 10.0.1",
     "beanie >=1.11.0,<2.0.0",
