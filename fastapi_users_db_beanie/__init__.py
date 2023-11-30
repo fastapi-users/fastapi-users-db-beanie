@@ -69,10 +69,10 @@ class BeanieUserDatabase(
         """Get a single user by id."""
         return await self.user_model.get(id)  # type: ignore
 
-    async def get_by_email(self, email: str) -> Optional[UP_BEANIE]:
+    async def get_by_email(self, email: str, with_children: bool = False, fetch_links = False) -> Optional[UP_BEANIE]:
         """Get a single user by email."""
         return await self.user_model.find_one(
-            self.user_model.email == email,
+            self.user_model.email == email, with_children=with_children, fetch_links=fetch_links
             collation=self.user_model.Settings.email_collation,
         )
 
