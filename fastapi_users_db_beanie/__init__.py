@@ -24,7 +24,7 @@ class BeanieBaseUser(BaseModel):
         email_collation = Collation("en", strength=2)
         indexes = [
             IndexModel(
-                "email", name="case_insensitive_email_index", collation=email_collation, unique=True
+                "email", name="case_insensitive_unique_email_index", collation=email_collation, unique=True
             ),
         ]
 
