@@ -1,18 +1,10 @@
-import asyncio
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
 
-@pytest.fixture(scope="session")
-def event_loop():
-    loop = asyncio.get_event_loop()
-    yield loop
-    loop.close()
-
-
 @pytest.fixture
-def oauth_account1() -> Dict[str, Any]:
+def oauth_account1() -> dict[str, Any]:
     return {
         "oauth_name": "service1",
         "access_token": "TOKEN",
@@ -23,7 +15,7 @@ def oauth_account1() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def oauth_account2() -> Dict[str, Any]:
+def oauth_account2() -> dict[str, Any]:
     return {
         "oauth_name": "service2",
         "access_token": "TOKEN",

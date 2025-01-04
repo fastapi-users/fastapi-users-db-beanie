@@ -1,10 +1,8 @@
 from datetime import datetime, timezone
 from typing import (
     Any,
-    Dict,
     Generic,
     Optional,
-    Type,
     TypeVar,
 )
 
@@ -37,24 +35,24 @@ class BeanieAccessTokenDatabase(Generic[AP_BEANIE], AccessTokenDatabase[AP_BEANI
     :param access_token_model: Beanie access token model.
     """
 
-    def __init__(self, access_token_model: Type[AP_BEANIE]):
+    def __init__(self, access_token_model: type[AP_BEANIE]):
         self.access_token_model = access_token_model
 
     async def get_by_token(
         self, token: str, max_age: Optional[datetime] = None
     ) -> Optional[AP_BEANIE]:
-        query: Dict[str, Any] = {"token": token}
+        query: dict[str, Any] = {"token": token}
         if max_age is not None:
             query["created_at"] = {"$gte": max_age}
         return await self.access_token_model.find_one(query)
 
-    async def create(self, create_dict: Dict[str, Any]) -> AP_BEANIE:
+    async def create(self, create_dict: dict[str, Any]) -> AP_BEANIE:
         access_token = self.access_token_model(**create_dict)
         await access_token.create()
         return access_token
 
     async def update(
-        self, access_token: AP_BEANIE, update_dict: Dict[str, Any]
+        self, access_token: AP_BEANIE, update_dict: dict[str, Any]
     ) -> AP_BEANIE:
         for key, value in update_dict.items():
             setattr(access_token, key, value)

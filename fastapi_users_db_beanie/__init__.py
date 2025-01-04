@@ -1,5 +1,6 @@
 """FastAPI Users database adapter for Beanie."""
-from typing import Any, Dict, Generic, Optional, Type, TypeVar
+
+from typing import Any, Generic, Optional, TypeVar
 
 import bson.errors
 from beanie import Document, PydanticObjectId
@@ -23,9 +24,12 @@ class BeanieBaseUser(BaseModel):
     class Settings:
         email_collation = Collation("en", strength=2)
         indexes = [
-            IndexModel("email", unique=True),
+            IndexModel("email"),
             IndexModel(
-                "email", name="case_insensitive_email_index", collation=email_collation
+                "email",
+                name="case_insensitive_email_index",
+                collation=email_collation,
+                unique=True,
             ),
         ]
 
@@ -59,8 +63,8 @@ class BeanieUserDatabase(
 
     def __init__(
         self,
-        user_model: Type[UP_BEANIE],
-        oauth_account_model: Optional[Type[BaseOAuthAccount]] = None,
+        user_model: type[UP_BEANIE],
+        oauth_account_model: Optional[type[BaseOAuthAccount]] = None,
     ):
         self.user_model = user_model
         self.oauth_account_model = oauth_account_model
@@ -90,13 +94,13 @@ class BeanieUserDatabase(
             }
         )
 
-    async def create(self, create_dict: Dict[str, Any]) -> UP_BEANIE:
+    async def create(self, create_dict: dict[str, Any]) -> UP_BEANIE:
         """Create a user."""
         user = self.user_model(**create_dict)
         await user.create()
         return user
 
-    async def update(self, user: UP_BEANIE, update_dict: Dict[str, Any]) -> UP_BEANIE:
+    async def update(self, user: UP_BEANIE, update_dict: dict[str, Any]) -> UP_BEANIE:
         """Update a user."""
         for key, value in update_dict.items():
             setattr(user, key, value)
@@ -108,7 +112,7 @@ class BeanieUserDatabase(
         await user.delete()
 
     async def add_oauth_account(
-        self, user: UP_BEANIE, create_dict: Dict[str, Any]
+        self, user: UP_BEANIE, create_dict: dict[str, Any]
     ) -> UP_BEANIE:
         """Create an OAuth account and add it to the user."""
         if self.oauth_account_model is None:
@@ -121,7 +125,7 @@ class BeanieUserDatabase(
         return user
 
     async def update_oauth_account(
-        self, user: UP_BEANIE, oauth_account: OAP, update_dict: Dict[str, Any]
+        self, user: UP_BEANIE, oauth_account: OAP, update_dict: dict[str, Any]
     ) -> UP_BEANIE:
         """Update an OAuth account on a user."""
         if self.oauth_account_model is None:

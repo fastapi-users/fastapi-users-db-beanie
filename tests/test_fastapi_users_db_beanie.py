@@ -1,7 +1,9 @@
-from typing import Any, AsyncGenerator, Dict, List, Optional
+from collections.abc import AsyncGenerator
+from typing import Any, Optional
 
 import pymongo.errors
 import pytest
+import pytest_asyncio
 from beanie import Document, PydanticObjectId, init_beanie
 from fastapi_users import InvalidID
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
@@ -24,10 +26,10 @@ class OAuthAccount(BaseOAuthAccount):
 
 
 class UserOAuth(User):
-    oauth_accounts: List[OAuthAccount] = Field(default_factory=list)
+    oauth_accounts: list[OAuthAccount] = Field(default_factory=list)
 
 
-@pytest.fixture(scope="module")
+@pytest_asyncio.fixture
 async def mongodb_client():
     client = AsyncIOMotorClient(
         "mongodb://localhost:27017",
@@ -44,7 +46,7 @@ async def mongodb_client():
         return
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def beanie_user_db(
     mongodb_client: AsyncIOMotorClient,
 ) -> AsyncGenerator[BeanieUserDatabase, None]:
@@ -56,7 +58,7 @@ async def beanie_user_db(
     await mongodb_client.drop_database("test_database")
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def beanie_user_db_oauth(
     mongodb_client: AsyncIOMotorClient,
 ) -> AsyncGenerator[BeanieUserDatabase, None]:
@@ -71,7 +73,7 @@ async def beanie_user_db_oauth(
 @pytest.mark.asyncio
 async def test_queries(
     beanie_user_db: BeanieUserDatabase[User],
-    oauth_account1: Dict[str, Any],
+    oauth_account1: dict[str, Any],
 ):
     user_create = {
         "email": "lancelot@camelot.bt",
@@ -194,8 +196,8 @@ async def test_queries_custom_fields(
 @pytest.mark.asyncio
 async def test_queries_oauth(
     beanie_user_db_oauth: BeanieUserDatabase[UserOAuth],
-    oauth_account1: Dict[str, Any],
-    oauth_account2: Dict[str, Any],
+    oauth_account1: dict[str, Any],
+    oauth_account2: dict[str, Any],
 ):
     user_create = {
         "email": "lancelot@camelot.bt",

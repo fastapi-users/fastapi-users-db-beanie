@@ -1,8 +1,9 @@
+from collections.abc import AsyncGenerator
 from datetime import datetime, timedelta, timezone
-from typing import AsyncGenerator
 
 import pymongo.errors
 import pytest
+import pytest_asyncio
 from beanie import Document, PydanticObjectId, init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
@@ -16,7 +17,7 @@ class AccessToken(BeanieBaseAccessToken, Document):
     pass
 
 
-@pytest.fixture(scope="module")
+@pytest_asyncio.fixture
 async def mongodb_client():
     client = AsyncIOMotorClient(
         "mongodb://localhost:27017",
@@ -33,7 +34,7 @@ async def mongodb_client():
         return
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def beanie_access_token_db(
     mongodb_client: AsyncIOMotorClient,
 ) -> AsyncGenerator[BeanieAccessTokenDatabase, None]:
