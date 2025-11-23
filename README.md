@@ -18,10 +18,6 @@
 [![PyPI version](https://badge.fury.io/py/fastapi-users-db-beanie.svg)](https://badge.fury.io/py/fastapi-users-db-beanie)
 [![Downloads](https://pepy.tech/badge/fastapi-users-db-beanie)](https://pepy.tech/project/fastapi-users-db-beanie)
 
-<p align="center">
-<a href="https://github.com/sponsors/frankie567"><img src="https://md-buttons.francoisvoron.com/button.svg?text=Buy%20me%20a%20coffee%20%E2%98%95%EF%B8%8F&bg=ef4444&w=200&h=50"></a>
-</p>
-
 ---
 
 **Documentation**: <a href="https://fastapi-users.github.io/fastapi-users/" target="_blank">https://fastapi-users.github.io/fastapi-users/</a>
