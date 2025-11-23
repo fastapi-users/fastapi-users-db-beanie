@@ -1,5 +1,5 @@
 from collections.abc import AsyncGenerator
-from typing import Any, Optional
+from typing import Any
 
 import pymongo.errors
 import pytest
@@ -18,7 +18,7 @@ from fastapi_users_db_beanie import (
 
 
 class User(Document, BeanieBaseUser):
-    first_name: Optional[str] = None
+    first_name: str | None = None
 
 
 class OAuthAccount(BaseOAuthAccount):

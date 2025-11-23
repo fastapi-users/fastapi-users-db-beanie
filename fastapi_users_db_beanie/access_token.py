@@ -2,7 +2,6 @@ from datetime import datetime, timezone
 from typing import (
     Any,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -39,8 +38,8 @@ class BeanieAccessTokenDatabase(Generic[AP_BEANIE], AccessTokenDatabase[AP_BEANI
         self.access_token_model = access_token_model
 
     async def get_by_token(
-        self, token: str, max_age: Optional[datetime] = None
-    ) -> Optional[AP_BEANIE]:
+        self, token: str, max_age: datetime | None = None
+    ) -> AP_BEANIE | None:
         query: dict[str, Any] = {"token": token}
         if max_age is not None:
             query["created_at"] = {"$gte": max_age}

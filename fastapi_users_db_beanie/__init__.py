@@ -1,6 +1,6 @@
 """FastAPI Users database adapter for Beanie."""
 
-from typing import Any, Generic, Optional, TypeVar
+from typing import Any, Generic, TypeVar
 
 import bson.errors
 from beanie import Document, PydanticObjectId
@@ -46,8 +46,8 @@ class BaseOAuthAccount(BaseModel):
     access_token: str
     account_id: str
     account_email: str
-    expires_at: Optional[int] = None
-    refresh_token: Optional[str] = None
+    expires_at: int | None = None
+    refresh_token: str | None = None
 
 
 class BeanieUserDatabase(
@@ -63,16 +63,16 @@ class BeanieUserDatabase(
     def __init__(
         self,
         user_model: type[UP_BEANIE],
-        oauth_account_model: Optional[type[BaseOAuthAccount]] = None,
+        oauth_account_model: type[BaseOAuthAccount] | None = None,
     ):
         self.user_model = user_model
         self.oauth_account_model = oauth_account_model
 
-    async def get(self, id: ID) -> Optional[UP_BEANIE]:
+    async def get(self, id: ID) -> UP_BEANIE | None:
         """Get a single user by id."""
         return await self.user_model.get(id)  # type: ignore
 
-    async def get_by_email(self, email: str) -> Optional[UP_BEANIE]:
+    async def get_by_email(self, email: str) -> UP_BEANIE | None:
         """Get a single user by email."""
         return await self.user_model.find_one(
             self.user_model.email == email,
@@ -81,7 +81,7 @@ class BeanieUserDatabase(
 
     async def get_by_oauth_account(
         self, oauth: str, account_id: str
-    ) -> Optional[UP_BEANIE]:
+    ) -> UP_BEANIE | None:
         """Get a single user by OAuth account id."""
         if self.oauth_account_model is None:
             raise NotImplementedError()
