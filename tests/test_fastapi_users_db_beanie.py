@@ -6,8 +6,8 @@ import pytest
 import pytest_asyncio
 from beanie import Document, PydanticObjectId, init_beanie
 from fastapi_users import InvalidID
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from pydantic import Field
+from pymongo import AsyncMongoClient
 
 from fastapi_users_db_beanie import (
     BaseOAuthAccount,
@@ -31,7 +31,7 @@ class UserOAuth(User):
 
 @pytest_asyncio.fixture
 async def mongodb_client():
-    client = AsyncIOMotorClient(
+    client = AsyncMongoClient(
         "mongodb://localhost:27017",
         serverSelectionTimeoutMS=10000,
         uuidRepresentation="standard",
@@ -40,7 +40,7 @@ async def mongodb_client():
     try:
         await client.server_info()
         yield client
-        client.close()
+        await client.close()
     except pymongo.errors.ServerSelectionTimeoutError:
         pytest.skip("MongoDB not available", allow_module_level=True)
         return
@@ -48,9 +48,9 @@ async def mongodb_client():
 
 @pytest_asyncio.fixture
 async def beanie_user_db(
-    mongodb_client: AsyncIOMotorClient,
+    mongodb_client: AsyncMongoClient,
 ) -> AsyncGenerator[BeanieUserDatabase, None]:
-    database: AsyncIOMotorDatabase = mongodb_client["test_database"]
+    database = mongodb_client["test_database"]
     await init_beanie(database=database, document_models=[User])
 
     yield BeanieUserDatabase(User)
@@ -60,9 +60,9 @@ async def beanie_user_db(
 
 @pytest_asyncio.fixture
 async def beanie_user_db_oauth(
-    mongodb_client: AsyncIOMotorClient,
+    mongodb_client: AsyncMongoClient,
 ) -> AsyncGenerator[BeanieUserDatabase, None]:
-    database: AsyncIOMotorDatabase = mongodb_client["test_database"]
+    database = mongodb_client["test_database"]
     await init_beanie(database=database, document_models=[UserOAuth])
 
     yield BeanieUserDatabase(UserOAuth, OAuthAccount)

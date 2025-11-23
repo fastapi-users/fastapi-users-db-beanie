@@ -5,7 +5,7 @@ import pymongo.errors
 import pytest
 import pytest_asyncio
 from beanie import Document, PydanticObjectId, init_beanie
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+from pymongo import AsyncMongoClient
 
 from fastapi_users_db_beanie.access_token import (
     BeanieAccessTokenDatabase,
@@ -19,7 +19,7 @@ class AccessToken(BeanieBaseAccessToken, Document):
 
 @pytest_asyncio.fixture
 async def mongodb_client():
-    client = AsyncIOMotorClient(
+    client = AsyncMongoClient(
         "mongodb://localhost:27017",
         serverSelectionTimeoutMS=10000,
         uuidRepresentation="standard",
@@ -28,7 +28,7 @@ async def mongodb_client():
     try:
         await client.server_info()
         yield client
-        client.close()
+        await client.close()
     except pymongo.errors.ServerSelectionTimeoutError:
         pytest.skip("MongoDB not available", allow_module_level=True)
         return
@@ -36,9 +36,9 @@ async def mongodb_client():
 
 @pytest_asyncio.fixture
 async def beanie_access_token_db(
-    mongodb_client: AsyncIOMotorClient,
+    mongodb_client: AsyncMongoClient,
 ) -> AsyncGenerator[BeanieAccessTokenDatabase, None]:
-    database: AsyncIOMotorDatabase = mongodb_client["test_database"]
+    database = mongodb_client["test_database"]
     await init_beanie(database=database, document_models=[AccessToken])
 
     yield BeanieAccessTokenDatabase(AccessToken)
